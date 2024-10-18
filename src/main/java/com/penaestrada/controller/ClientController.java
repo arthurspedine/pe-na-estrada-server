@@ -28,9 +28,6 @@ import java.util.List;
 public class ClientController {
 
     @Autowired
-    private AuthenticationManager manager;
-
-    @Autowired
     private TokenService tokenService;
 
     @Autowired
@@ -61,14 +58,6 @@ public class ClientController {
                 , vehicles, new ArrayList<>()
         );
         return ResponseEntity.status(201).body(response);
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody @Valid Login data) {
-        var user = new UsernamePasswordAuthenticationToken(data.email(), data.password());
-        var auth = manager.authenticate(user);
-        String token = tokenService.genToken((User) auth.getPrincipal());
-        return ResponseEntity.ok(new LoginResponse(token, data.email()));
     }
 
     @GetMapping("/dashboard")
