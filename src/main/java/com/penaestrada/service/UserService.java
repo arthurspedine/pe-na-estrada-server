@@ -15,6 +15,14 @@ public class UserService {
     private UserRepository repository;
 
     public User createUser(Login data) {
+        if (data.email() == null || data.email().isEmpty())
+            throw new IllegalArgumentException("O email é obrigatório.");
+        if (data.password() == null || data.password().isEmpty())
+            throw new IllegalArgumentException("A senha é obrigatória.");
+
+        if (repository.findByLogin(data.email()) != null)
+            throw new IllegalArgumentException("Já existe um usuário com o email informado.");
+
         User newUser = new User();
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());

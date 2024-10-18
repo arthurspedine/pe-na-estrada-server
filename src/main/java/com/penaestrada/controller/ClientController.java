@@ -3,6 +3,7 @@ package com.penaestrada.controller;
 import com.penaestrada.dto.*;
 import com.penaestrada.infra.security.TokenService;
 import com.penaestrada.model.*;
+import com.penaestrada.model.exception.UndefinedAuthHeaderException;
 import com.penaestrada.service.*;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -10,8 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,7 +61,8 @@ public class ClientController {
     @GetMapping("/dashboard")
     public ResponseEntity<ClientDetailsResponse> clientDashboard(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
         if (authHeader == null || !authHeader.startsWith("Bearer "))
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new UndefinedAuthHeaderException("Identifique-se para acessar este recurso!");
+
         String login = tokenService.getSubject(authHeader.replace("Bearer ", ""));
         ClientDetailsResponse response = clientService.getClientDashboard(login);
 
@@ -69,7 +73,7 @@ public class ClientController {
     public ResponseEntity<ContactResponse> addContactPhone(@RequestBody @Valid CreateContactPhone data,
                                                                 @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
         if (authHeader == null || !authHeader.startsWith("Bearer "))
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new UndefinedAuthHeaderException("Identifique-se para acessar este recurso!");
 
         String login = tokenService.getSubject(authHeader.replace("Bearer ", ""));
         Client client = clientService.getClientByLogin(login);
@@ -81,7 +85,7 @@ public class ClientController {
     public ResponseEntity<ClientAddressResponse> addAddress(@RequestBody @Valid ClientCreateAddress data,
                                                               @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
         if (authHeader == null || !authHeader.startsWith("Bearer "))
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new UndefinedAuthHeaderException("Identifique-se para acessar este recurso!");
 
         String login = tokenService.getSubject(authHeader.replace("Bearer ", ""));
         Client client = clientService.getClientByLogin(login);
@@ -93,7 +97,7 @@ public class ClientController {
     @GetMapping("/address")
     public ResponseEntity<List<ClientAddressResponse>> listAddresses(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
         if (authHeader == null || !authHeader.startsWith("Bearer "))
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new UndefinedAuthHeaderException("Identifique-se para acessar este recurso!");
 
         String login = tokenService.getSubject(authHeader.replace("Bearer ", ""));
         Client client = clientService.getClientByLogin(login);

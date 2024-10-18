@@ -24,6 +24,9 @@ public class ClientService {
     private ClientRepository repository;
 
     public Client registerClient(String name, String cpf, String birthDate, User user) {
+        if (repository.findByCpf(cpf).isPresent()) {
+            throw new IllegalArgumentException("Cliente com CPF já cadastrado.");
+        }
         Client newClient = new Client();
         newClient.setName(name);
         newClient.setCpf(cpf);

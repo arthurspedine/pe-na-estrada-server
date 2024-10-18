@@ -1,5 +1,6 @@
 package com.penaestrada.model;
 
+import com.penaestrada.model.exception.UnderAgeException;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -65,9 +66,9 @@ public class Client {
 
     public void setBirthDate(LocalDate birthDate) {
         if (birthDate.isAfter(LocalDate.now())) {
-            throw new IllegalArgumentException("Birth date cannot be in the future");
+            throw new IllegalArgumentException("Data de nascimento inválida.");
         } else if (birthDate.isAfter(LocalDate.now().minusYears(18))) {
-            throw new IllegalArgumentException("Client must be at least 18 years old");
+            throw new UnderAgeException("Cliente menor de idade.");
         }
         this.birthDate = birthDate;
     }

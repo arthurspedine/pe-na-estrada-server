@@ -14,6 +14,10 @@ public class VehicleService {
     private VehicleRepository repository;
 
     public Vehicle registerVehicle(CreateVehicle vehicle, Client client) {
+        if (repository.existsByLicensePlate(vehicle.licensePlate().replace("-", ""))) {
+            throw new IllegalArgumentException("Veículo já cadastrado com a placa informada");
+        }
+
         Vehicle newVehicle = new Vehicle();
         newVehicle.setBrand(vehicle.brand());
         newVehicle.setModel(vehicle.model());

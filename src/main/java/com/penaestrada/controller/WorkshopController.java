@@ -6,6 +6,7 @@ import com.penaestrada.model.Client;
 import com.penaestrada.model.ContactPhone;
 import com.penaestrada.model.User;
 import com.penaestrada.model.Workshop;
+import com.penaestrada.model.exception.UndefinedAuthHeaderException;
 import com.penaestrada.service.ContactPhoneService;
 import com.penaestrada.service.UserService;
 import com.penaestrada.service.WorkshopService;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -54,7 +56,7 @@ public class WorkshopController {
     public ResponseEntity<ContactResponse> addContactPhone(@RequestBody @Valid CreateContactPhone data,
                                                            @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
         if (authHeader == null || !authHeader.startsWith("Bearer "))
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new UndefinedAuthHeaderException("Identifique-se para acessar este recurso!");
 
         String login = tokenService.getSubject(authHeader.replace("Bearer ", ""));
         Workshop client = workshopService.getWorkshopByLogin(login);

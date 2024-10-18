@@ -7,6 +7,7 @@ import com.penaestrada.dto.WorkshopDetailsResponse;
 import com.penaestrada.model.User;
 import com.penaestrada.model.Workshop;
 import com.penaestrada.repository.WorkshopRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +44,7 @@ public class WorkshopService {
     }
 
     public Workshop getWorkshopByLogin(String login) {
-        return repository.findByUserLogin(login).orElseThrow(() -> new RuntimeException("Workshop not found"));
+        return repository.findByUserLogin(login).orElseThrow(() -> new EntityNotFoundException("Workshop not found"));
     }
 
     public WorkshopDetailsResponse workshopToResponse(Workshop workshop) {
