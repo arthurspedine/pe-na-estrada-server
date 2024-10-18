@@ -2,22 +2,14 @@ package com.penaestrada.controller;
 
 import com.penaestrada.dto.*;
 import com.penaestrada.infra.security.TokenService;
-import com.penaestrada.model.Client;
-import com.penaestrada.model.ContactPhone;
-import com.penaestrada.model.User;
-import com.penaestrada.model.Vehicle;
-import com.penaestrada.service.ClientService;
-import com.penaestrada.service.ContactPhoneService;
-import com.penaestrada.service.UserService;
-import com.penaestrada.service.VehicleService;
+import com.penaestrada.model.*;
+import com.penaestrada.service.*;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -41,6 +33,9 @@ public class ClientController {
 
     @Autowired
     private ContactPhoneService contactPhoneService;
+
+    @Autowired
+    private ClientAddressService clientAddressService;
 
     @PostMapping("/register")
     @Transactional
@@ -80,6 +75,33 @@ public class ClientController {
         Client client = clientService.getClientByLogin(login);
         ContactPhone contactPhone = contactPhoneService.createContactPhone(client, data.ddi(), data.number());
         return ResponseEntity.status(201).body(new ContactResponse(contactPhone.getId(), contactPhone.formattedNumber()));
+    }
+
+    @PostMapping("/address")
+    public ResponseEntity<ClientAddressResponse> addAddress(@RequestBody @Valid ClientCreateAddress data,
+                                                              @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer "))
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
+        String login = tokenService.getSubject(authHeader.replace("Bearer ", ""));
+        Client client = clientService.getClientByLogin(login);
+        ClientAddress address = clientAddressService.createAddress(client, data);
+
+        return ResponseEntity.status(201).body(clientAddressService.addressToResponse(address));
+    }
+
+    @GetMapping("/address")
+    public ResponseEntity<List<ClientAddressResponse>> listAddresses(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer "))
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
+        String login = tokenService.getSubject(authHeader.replace("Bearer ", ""));
+        Client client = clientService.getClientByLogin(login);
+        List<ClientAddress> addresses = clientAddressService.listAddresses(client);
+        List<ClientAddressResponse> response = new ArrayList<>();
+        addresses.forEach(address -> response.add(clientAddressService.addressToResponse(address)));
+
+        return ResponseEntity.ok().body(response);
     }
 
 }

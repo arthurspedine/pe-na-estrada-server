@@ -1,5 +1,6 @@
 package com.penaestrada.service;
 
+import com.penaestrada.dto.WorkshopAddressResponse;
 import com.penaestrada.dto.ContactResponse;
 import com.penaestrada.dto.CreateWorkshop;
 import com.penaestrada.dto.WorkshopDetailsResponse;
@@ -9,7 +10,6 @@ import com.penaestrada.repository.WorkshopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,29 +38,23 @@ public class WorkshopService {
 
     public List<WorkshopDetailsResponse> getAllWorkshops() {
         return repository.findAll().stream()
-                .map(w -> {
-                    List<ContactResponse> contacts = w.getContactPhones().stream()
-                            .map(f -> new ContactResponse(f.getId(), f.formattedNumber()))
-                            .collect(Collectors.toList());
-
-                    return new WorkshopDetailsResponse(
-                            w.getId(),
-                            w.getName(),
-                            w.getAddress(),
-                            String.valueOf(w.getNumber()),
-                            w.getZipCode(),
-                            w.getNeighborhood(),
-                            w.getCity(),
-                            w.getState(),
-                            w.getRating(),
-                            w.getMapsUrl(),
-                            contacts
-                    );
-                })
+                .map(this::workshopToResponse)
                 .collect(Collectors.toList());
     }
 
     public Workshop getWorkshopByLogin(String login) {
         return repository.findByUserLogin(login).orElseThrow(() -> new RuntimeException("Workshop not found"));
+    }
+
+    public WorkshopDetailsResponse workshopToResponse(Workshop workshop) {
+        List<ContactResponse> contacts = workshop.getContactPhones().stream()
+                .map(f -> new ContactResponse(f.getId(), f.formattedNumber()))
+                .toList();
+        return new WorkshopDetailsResponse(
+                workshop.getId(), workshop.getName(), new WorkshopAddressResponse(workshop.getAddress(),
+                String.valueOf(workshop.getNumber()), workshop.getZipCode(),
+                workshop.getNeighborhood(), workshop.getCity(), workshop.getState(),
+                workshop.getRating(), workshop.getMapsUrl()), contacts
+        );
     }
 }

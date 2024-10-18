@@ -1,9 +1,6 @@
 package com.penaestrada.controller;
 
-import com.penaestrada.dto.ContactResponse;
-import com.penaestrada.dto.CreateContactPhone;
-import com.penaestrada.dto.CreateWorkshop;
-import com.penaestrada.dto.WorkshopDetailsResponse;
+import com.penaestrada.dto.*;
 import com.penaestrada.infra.security.TokenService;
 import com.penaestrada.model.Client;
 import com.penaestrada.model.ContactPhone;
@@ -44,12 +41,7 @@ public class WorkshopController {
     public ResponseEntity<WorkshopDetailsResponse> createWorkshopAccount(@RequestBody @Valid CreateWorkshop data) {
         User user = userService.createUser(data.login());
         Workshop workshop = workshopService.createWorkshop(data, user);
-        WorkshopDetailsResponse response = new WorkshopDetailsResponse(
-                workshop.getId(), workshop.getName(), workshop.getAddress(),
-                String.valueOf(workshop.getNumber()), workshop.getZipCode(),
-                workshop.getNeighborhood(), workshop.getCity(), workshop.getState(),
-                workshop.getRating(), workshop.getMapsUrl(), new ArrayList<>()
-        );
+        WorkshopDetailsResponse response = workshopService.workshopToResponse(workshop);
         return ResponseEntity.status(201).body(response);
     }
 
