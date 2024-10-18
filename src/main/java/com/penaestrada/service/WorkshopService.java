@@ -59,4 +59,8 @@ public class WorkshopService {
                 })
                 .collect(Collectors.toList());
     }
+
+    public Workshop getWorkshopByLogin(String login) {
+        return repository.findByUserLogin(login).orElseThrow(() -> new RuntimeException("Workshop not found"));
+    }
 }
