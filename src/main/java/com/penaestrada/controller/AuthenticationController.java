@@ -33,6 +33,9 @@ public class AuthenticationController {
         var auth = manager.authenticate(user);
         String token = tokenService.genToken((User) auth.getPrincipal());
         Cookie cookie = new Cookie("pe_access_token", token);
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
         response.addCookie(cookie);
         return ResponseEntity.ok(new LoginResponse(token));
     }
