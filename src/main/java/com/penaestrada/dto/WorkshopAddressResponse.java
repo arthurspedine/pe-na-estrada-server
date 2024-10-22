@@ -6,8 +6,6 @@ public record WorkshopAddressResponse(
         String zipCode,
         String neighborhood,
         String city,
-        String state,
-        Double rating,
-        String mapsUrl
+        String state
 ) {
 }

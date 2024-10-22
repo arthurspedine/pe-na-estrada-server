@@ -39,6 +39,8 @@ public class ClientController {
 
     @Autowired
     private ClientAddressService clientAddressService;
+    @Autowired
+    private WorkshopService workshopService;
 
     @PostMapping("/signup")
     @Transactional
@@ -60,7 +62,8 @@ public class ClientController {
 
     @GetMapping("/dashboard")
     public ResponseEntity<ClientDetailsResponse> clientDashboard(@CookieValue(value = "pe_access_token") String token) {
-        ClientDetailsResponse response = clientService.getClientDashboard(token);
+        String login = tokenService.getSubject(token);
+        ClientDetailsResponse response = clientService.getClientDashboard(login);
 
         return ResponseEntity.ok().body(response);
     }
@@ -104,4 +107,25 @@ public class ClientController {
         return ResponseEntity.ok().body(response);
     }
 
+    @GetMapping("/chatbot/init")
+    public ResponseEntity<ChatbotInitRequest> chatbotInitRequest(@CookieValue(value = "pe_access_token") String token) {
+        String login = tokenService.getSubject(token);
+        Client client = clientService.getClientByLogin(login);
+        List<SimpleResponse> vehicles = client.getVehicles().stream()
+                .map(v -> new SimpleResponse(v.getId(), v.getBrand() + " " + v.getModel() + " " + v.getYear()))
+                .toList();
+        List<SimpleResponse> workshops = workshopService.findAllWorkshops().stream()
+                .map(w -> new SimpleResponse(w.getId(), w.getName()))
+                .toList();
+        return ResponseEntity.ok().body(new ChatbotInitRequest(client.getName(), vehicles, workshops));
+    }
+
+    @PostMapping("/vehicle")
+    public ResponseEntity<VehicleResponse> createVehicle(@CookieValue(value = "pe_access_token") String token, @RequestBody @Valid CreateVehicle data) {
+        String login = tokenService.getSubject(token);
+        Client client = clientService.getClientByLogin(login);
+        Vehicle vehicle = vehicleService.registerVehicle(data, client);
+        return ResponseEntity.status(201).body(new VehicleResponse(vehicle.getId(), vehicle.getBrand(), vehicle.getModel(),
+                String.valueOf(vehicle.getYear()), vehicle.getLicensePlate()));
+    }
 }

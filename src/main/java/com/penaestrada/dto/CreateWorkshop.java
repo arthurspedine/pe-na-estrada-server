@@ -2,6 +2,7 @@ package com.penaestrada.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import org.aspectj.weaver.ast.Not;
 import org.hibernate.validator.constraints.URL;
 
 public record CreateWorkshop(
@@ -26,6 +27,8 @@ public record CreateWorkshop(
         @URL
         String mapsUrl,
         @NotNull
-        Login login
+        Login login,
+        @NotNull
+        CreateContactPhone contact
 ) {
 }

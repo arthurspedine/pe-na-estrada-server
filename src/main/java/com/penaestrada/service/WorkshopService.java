@@ -11,6 +11,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,8 +55,12 @@ public class WorkshopService {
         return new WorkshopDetailsResponse(
                 workshop.getId(), workshop.getName(), new WorkshopAddressResponse(workshop.getAddress(),
                 String.valueOf(workshop.getNumber()), workshop.getZipCode(),
-                workshop.getNeighborhood(), workshop.getCity(), workshop.getState(),
-                workshop.getRating(), workshop.getMapsUrl()), contacts
+                workshop.getNeighborhood(), workshop.getCity(), workshop.getState()),
+                workshop.getRating(), workshop.getMapsUrl(), contacts
         );
+    }
+
+    public List<Workshop> findAllWorkshops() {
+        return repository.findAll();
     }
 }

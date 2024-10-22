@@ -43,6 +43,8 @@ public class WorkshopController {
     public ResponseEntity<WorkshopDetailsResponse> createWorkshopAccount(@RequestBody @Valid CreateWorkshop data) {
         User user = userService.createUser(data.login());
         Workshop workshop = workshopService.createWorkshop(data, user);
+        ContactPhone contactPhone = contactPhoneService.createContactPhone(workshop, data.contact().ddi(), data.contact().number());
+        workshop.getContactPhones().add(contactPhone);
         WorkshopDetailsResponse response = workshopService.workshopToResponse(workshop);
         return ResponseEntity.status(201).body(response);
     }

@@ -12,7 +12,7 @@ public record CreateVehicle(
         @Pattern(regexp = "\\d{4}")
         String year,
         @NotNull
-        @Pattern(regexp = "\\d{4}-\\d{3}")
+        @Pattern(regexp = "^[A-Z]{3}-\\d{4}$|^[A-Z]{3}\\d{4}$")
         String licensePlate
 ) {
 }

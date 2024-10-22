@@ -2,6 +2,7 @@ package com.penaestrada.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "Workshop")
@@ -44,7 +45,7 @@ public class Workshop {
     private User user;
 
     @OneToMany(mappedBy = "workshop")
-    private List<ContactPhone> contactPhones;
+    private List<ContactPhone> contactPhones = new ArrayList<>();
 
     public Workshop() {
     }

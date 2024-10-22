@@ -22,12 +22,12 @@ public class AdminUserConfig implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) throws Exception {
-        UserDetails userAdmin = repository.findByLogin("admin");
+        UserDetails userAdmin = repository.findByLogin("admin@admin.com");
 
         if (userAdmin == null) {
             User user = new User();
-            user.setLogin("admin");
-            user.setPassword(encoder.encode("123"));
+            user.setLogin("admin@admin.com");
+            user.setPassword(encoder.encode("sH0dQ1hJ2Y3D1Wl4"));
             user.setRole(Role.ADMIN);
             repository.save(user);
         } else {
