@@ -38,7 +38,7 @@ public class WorkshopController {
     @Autowired
     private ContactPhoneService contactPhoneService;
 
-    @PostMapping("/register")
+    @PostMapping("/signup")
     @Transactional
     public ResponseEntity<WorkshopDetailsResponse> createWorkshopAccount(@RequestBody @Valid CreateWorkshop data) {
         User user = userService.createUser(data.login());

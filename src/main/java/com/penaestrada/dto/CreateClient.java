@@ -8,7 +8,7 @@ public record CreateClient(
         @NotNull
         String name,
         @NotBlank
-        @Pattern(regexp = "\\d{3}\\.\\d{3}\\.\\d{3}\\-\\d{2}")
+//        @Pattern(regexp = "\\d{3}\\.\\d{3}\\.\\d{3}\\-\\d{2}")
         String cpf,
         @NotNull
         String birthDate,

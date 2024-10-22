@@ -40,7 +40,7 @@ public class ClientController {
     @Autowired
     private ClientAddressService clientAddressService;
 
-    @PostMapping("/register")
+    @PostMapping("/signup")
     @Transactional
     public ResponseEntity<ClientDetailsResponse> registerClient(@RequestBody @Valid CreateClient data) {
         User user = userService.createUser(data.login());
@@ -59,12 +59,8 @@ public class ClientController {
     }
 
     @GetMapping("/dashboard")
-    public ResponseEntity<ClientDetailsResponse> clientDashboard(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
-        if (authHeader == null || !authHeader.startsWith("Bearer "))
-            throw new UndefinedAuthHeaderException("Identifique-se para acessar este recurso!");
-
-        String login = tokenService.getSubject(authHeader.replace("Bearer ", ""));
-        ClientDetailsResponse response = clientService.getClientDashboard(login);
+    public ResponseEntity<ClientDetailsResponse> clientDashboard(@CookieValue(value = "pe_access_token") String token) {
+        ClientDetailsResponse response = clientService.getClientDashboard(token);
 
         return ResponseEntity.ok().body(response);
     }

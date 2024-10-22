@@ -29,8 +29,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         req -> {
                             req.requestMatchers(HttpMethod.POST, "/login").permitAll();
-                            req.requestMatchers(HttpMethod.POST, "/client/register").permitAll();
-                            req.requestMatchers(HttpMethod.POST, "/workshop/register").hasRole("ADMIN");
+                            req.requestMatchers(HttpMethod.POST, "/client/signup").permitAll();
+                            req.requestMatchers(HttpMethod.POST, "/workshop/singup").hasRole("ADMIN");
                             req.requestMatchers(HttpMethod.GET, "/workshop").permitAll();
                             req.anyRequest().authenticated();
                         }
