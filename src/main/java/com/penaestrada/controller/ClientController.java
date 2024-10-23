@@ -5,8 +5,10 @@ import com.penaestrada.infra.security.TokenService;
 import com.penaestrada.model.*;
 import com.penaestrada.model.exception.UndefinedAuthHeaderException;
 import com.penaestrada.service.*;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -127,5 +129,17 @@ public class ClientController {
         Vehicle vehicle = vehicleService.registerVehicle(data, client);
         return ResponseEntity.status(201).body(new VehicleResponse(vehicle.getId(), vehicle.getBrand(), vehicle.getModel(),
                 String.valueOf(vehicle.getYear()), vehicle.getLicensePlate()));
+    }
+
+    @DeleteMapping("/vehicle")
+    public ResponseEntity<Void> deleteVehicle(@CookieValue(value = "pe_access_token") String token, @RequestParam Long vehicleId) {
+        String login = tokenService.getSubject(token);
+        Client client = clientService.getClientByLogin(login);
+        try {
+            vehicleService.deleteVehicle(vehicleId, client.getVehicles());
+            return ResponseEntity.ok().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(404).build();
+        }
     }
 }
