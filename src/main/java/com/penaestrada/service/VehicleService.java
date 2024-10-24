@@ -37,13 +37,13 @@ public class VehicleService {
         if (!repository.existsById(vehicleId)) {
             throw new EntityNotFoundException("Veículo não existe.");
         }
-        Optional<Vehicle> vehicle = vehicles.stream()
+        Vehicle vehicle = getVehicleById(vehicleId, vehicles);
+        repository.deleteById(vehicle.getId());
+    }
+
+    public Vehicle getVehicleById(Long vehicleId, List<Vehicle> vehicles) {
+        return vehicles.stream()
                 .filter(v -> v.getId().equals(vehicleId))
-                .findFirst();
-        if (vehicle.isPresent()) {
-            repository.deleteById(vehicleId);
-        } else {
-            throw new RuntimeException("Esse veículo não te pertence.");
-        }
+                .findFirst().orElseThrow(() -> new RuntimeException("Esse veículo não te pertence."));
     }
 }

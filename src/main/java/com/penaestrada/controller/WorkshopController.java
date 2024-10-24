@@ -55,6 +55,7 @@ public class WorkshopController {
     }
 
     @PostMapping("/contact")
+    @Transactional
     public ResponseEntity<ContactResponse> addContactPhone(@RequestBody @Valid CreateContactPhone data,
                                                            @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
         if (authHeader == null || !authHeader.startsWith("Bearer "))

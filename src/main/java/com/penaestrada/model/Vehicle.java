@@ -2,6 +2,8 @@ package com.penaestrada.model;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity(name = "Vehicle")
 @Table(name = "t_pe_vehicles")
 public class Vehicle {
@@ -25,6 +27,10 @@ public class Vehicle {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "client_id", referencedColumnName = "id", nullable = false)
     private Client client;
+
+    @OneToMany(mappedBy = "vehicle")
+    private List<Estimate> estimates;
+
 
     public Vehicle() {
     }
@@ -75,5 +81,9 @@ public class Vehicle {
 
     public void setLicensePlate(String licensePlate) {
         this.licensePlate = licensePlate.replace("-", "");
+    }
+
+    public List<Estimate> getEstimates() {
+        return estimates;
     }
 }

@@ -71,6 +71,7 @@ public class ClientController {
     }
 
     @PostMapping("/contact")
+    @Transactional
     public ResponseEntity<ContactResponse> addContactPhone(@RequestBody @Valid CreateContactPhone data,
                                                                 @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
         if (authHeader == null || !authHeader.startsWith("Bearer "))
@@ -83,6 +84,7 @@ public class ClientController {
     }
 
     @PostMapping("/address")
+    @Transactional
     public ResponseEntity<ClientAddressResponse> addAddress(@RequestBody @Valid ClientCreateAddress data,
                                                               @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
         if (authHeader == null || !authHeader.startsWith("Bearer "))
@@ -123,6 +125,7 @@ public class ClientController {
     }
 
     @PostMapping("/vehicle")
+    @Transactional
     public ResponseEntity<VehicleResponse> createVehicle(@CookieValue(value = "pe_access_token") String token, @RequestBody @Valid CreateVehicle data) {
         String login = tokenService.getSubject(token);
         Client client = clientService.getClientByLogin(login);
@@ -132,6 +135,7 @@ public class ClientController {
     }
 
     @DeleteMapping("/vehicle")
+    @Transactional
     public ResponseEntity<Void> deleteVehicle(@CookieValue(value = "pe_access_token") String token, @RequestParam Long vehicleId) {
         String login = tokenService.getSubject(token);
         Client client = clientService.getClientByLogin(login);

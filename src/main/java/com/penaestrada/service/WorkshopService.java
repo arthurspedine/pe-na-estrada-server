@@ -8,6 +8,7 @@ import com.penaestrada.model.User;
 import com.penaestrada.model.Workshop;
 import com.penaestrada.repository.WorkshopRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -62,5 +63,9 @@ public class WorkshopService {
 
     public List<Workshop> findAllWorkshops() {
         return repository.findAll();
+    }
+
+    public Workshop findWorkshopById(Long id) {
+        return repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Workshop not found"));
     }
 }
